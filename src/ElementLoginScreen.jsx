@@ -11,9 +11,16 @@ const ElementLoginScreen = () => {
   const handleLoginSuccess = (details) => {
     setLoggedIn(true);
     setLoginDetails(details);
-    const { baseUrl, accessToken, userId } = details;
-    initMatrixClient(baseUrl, accessToken, userId);
+    initMatrixClient(details); // Pass the entire details object
   };
+
+  useEffect(() => {
+    if (loggedIn && loginDetails) {
+      const { baseUrl, accessToken, userId } = loginDetails;
+      const elementUrl = `https://app.element.io/#/login?homeserver=${baseUrl}&access_token=${accessToken}&user_id=${userId}`;
+      window.location.href = elementUrl;
+    }
+  }, [loggedIn, loginDetails]);
 
   return (
     <div>

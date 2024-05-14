@@ -1,16 +1,16 @@
+// src/MatrixClient.js
 import sdk from 'matrix-js-sdk';
 
-let client;
+let matrixClient;
 
 export const initMatrixClient = ({ baseUrl, accessToken, userId }) => {
-  client = sdk.createClient({
+  matrixClient = sdk.createClient({
     baseUrl,
     accessToken,
-    userId,
+    userId
   });
 
-  client.startClient();
-  return client;
+  matrixClient.startClient();
 };
 
-export const getMatrixClient = () => client;
+export const getMatrixClient = () => matrixClient;
