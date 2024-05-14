@@ -1,4 +1,4 @@
-// src/ElementLoginScreen.js
+// src/ElementLoginScreen.jsx
 import React, { useState, useEffect } from 'react';
 import MatrixLogin from './MatrixLogin';
 import { initMatrixClient, getMatrixClient } from './MatrixClient';
@@ -10,18 +10,25 @@ const ElementLoginScreen = () => {
   const handleLoginSuccess = (details) => {
     setLoggedIn(true);
     setLoginDetails(details);
-    initMatrixClient(details); // Pass the entire details object
+    try {
+      initMatrixClient(details);
+    } catch (error) {
+      console.error("Error initializing Matrix client:", error);
+    }
   };
 
   useEffect(() => {
     if (loggedIn && loginDetails) {
-      // Client is already initialized in handleLoginSuccess
       const client = getMatrixClient();
-      client.once('sync', (state) => {
-        if (state === 'PREPARED') {
-          console.log('Matrix client is ready');
-        }
-      });
+      try {
+        client.once('sync', (state) => {
+          if (state === 'PREPARED') {
+            console.log('Matrix client is ready');
+          }
+        });
+      } catch (error) {
+        console.error("Error during Matrix client sync:", error);
+      }
     }
   }, [loggedIn, loginDetails]);
 

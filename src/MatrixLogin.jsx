@@ -1,4 +1,4 @@
-// src/MatrixLogin.js
+// src/MatrixLogin.jsx
 import React, { useState } from 'react';
 
 const MatrixLogin = ({ onLoginSuccess }) => {
@@ -61,7 +61,7 @@ const MatrixLogin = ({ onLoginSuccess }) => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button type='button' onClick={handleLogin}>Login</button>
+      <button type="button" onClick={handleLogin}>Login</button>
     </div>
   );
 };
