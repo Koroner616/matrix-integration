@@ -22,7 +22,6 @@ const MatrixLogin = ({ onLoginSuccess }) => {
 
       if (response.status === 200) {
         const result = await response.json();
-        console.log("🚀 ~ handleLogin ~ response:", result);
         const { access_token, user_id, device_id, well_known } = result;
         const homeserverUrl = well_known['m.homeserver'].base_url;
         onLoginSuccess({

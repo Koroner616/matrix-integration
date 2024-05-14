@@ -1,8 +1,7 @@
 // src/ElementLoginScreen.js
 import React, { useState, useEffect } from 'react';
 import MatrixLogin from './MatrixLogin';
-import { initMatrixClient } from './MatrixClient';
-import ElementHome from './ElementHome';
+import { initMatrixClient, getMatrixClient } from './MatrixClient';
 
 const ElementLoginScreen = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -16,9 +15,13 @@ const ElementLoginScreen = () => {
 
   useEffect(() => {
     if (loggedIn && loginDetails) {
-      const { baseUrl, accessToken, userId } = loginDetails;
-      const elementUrl = `https://app.element.io/#/login?homeserver=${baseUrl}&access_token=${accessToken}&user_id=${userId}`;
-      window.location.href = elementUrl;
+      // Client is already initialized in handleLoginSuccess
+      const client = getMatrixClient();
+      client.once('sync', (state) => {
+        if (state === 'PREPARED') {
+          console.log('Matrix client is ready');
+        }
+      });
     }
   }, [loggedIn, loginDetails]);
 
@@ -27,7 +30,10 @@ const ElementLoginScreen = () => {
       {!loggedIn ? (
         <MatrixLogin onLoginSuccess={handleLoginSuccess} />
       ) : (
-        <ElementHome loginDetails={loginDetails} />
+        <div>
+          <h3>Welcome to Matrix!</h3>
+          <p>You are logged in.</p>
+        </div>
       )}
     </div>
   );
