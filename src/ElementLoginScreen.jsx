@@ -1,7 +1,37 @@
-// src/ElementLoginScreen.jsx
+// import React, { useState } from 'react';
+// import MatrixChat from 'matrix-react-sdk/lib/components/structures/MatrixChat';
+// import MatrixLogin from './MatrixLogin';
+// import configureMatrixReactSdk from './ElementConfig';
+// import { initMatrixClient, getMatrixClient } from './MatrixClient';
+
+// configureMatrixReactSdk();
+
+// const ElementLoginScreen = () => {
+//   const [matrixClient, setMatrixClient] = useState(null);
+
+//   const handleLoginSuccess = ({
+//     user_id,
+//     access_token,
+//     home_server,
+//   }) => {
+//     initMatrixClient(`https://${home_server}`, access_token, user_id);
+//     setMatrixClient(getMatrixClient());
+//   };
+
+//   return (
+//     <div>
+//       {matrixClient ? (
+//         <MatrixChat client={matrixClient} />
+//       ) : (
+//         <MatrixLogin onLoginSuccess={handleLoginSuccess} />
+//       )}
+//     </div>
+//   );
+// };
+
+// export default ElementLoginScreen;
 import React, { useState, useEffect } from 'react';
 import MatrixLogin from './MatrixLogin';
-import { initMatrixClient, getMatrixClient } from './MatrixClient';
 
 const ElementLoginScreen = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -10,38 +40,21 @@ const ElementLoginScreen = () => {
   const handleLoginSuccess = (details) => {
     setLoggedIn(true);
     setLoginDetails(details);
-    try {
-      initMatrixClient(details);
-    } catch (error) {
-      console.error("Error initializing Matrix client:", error);
-    }
   };
 
   useEffect(() => {
     if (loggedIn && loginDetails) {
-      const client = getMatrixClient();
-      try {
-        client.once('sync', (state) => {
-          if (state === 'PREPARED') {
-            console.log('Matrix client is ready');
-          }
-        });
-      } catch (error) {
-        console.error("Error during Matrix client sync:", error);
-      }
+      const baseUrl = loginDetails.well_known['m.homeserver'].base_url;
+      const accessToken = loginDetails.access_token;
+      const userId = loginDetails.user_id;
+      const elementUrl = `https://app.element.io/#/login?homeserver=${baseUrl}&access_token=${accessToken}&user_id=${userId}`;
+      window.open(elementUrl, '_blank');
     }
   }, [loggedIn, loginDetails]);
 
   return (
     <div>
-      {!loggedIn ? (
-        <MatrixLogin onLoginSuccess={handleLoginSuccess} />
-      ) : (
-        <div>
-          <h3>Welcome to Matrix!</h3>
-          <p>You are logged in.</p>
-        </div>
-      )}
+      {!loggedIn && <MatrixLogin onLoginSuccess={handleLoginSuccess} />}
     </div>
   );
 };

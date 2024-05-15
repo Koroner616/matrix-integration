@@ -1,25 +1,13 @@
-// src/MatrixClient.js
-import sdk from 'matrix-js-sdk';
+import { createClient } from 'matrix-js-sdk';
 
-let matrixClient;
-
-export const initMatrixClient = ({ baseUrl, accessToken, userId }) => {
-  if (!baseUrl || !accessToken || !userId) {
-    throw new Error("Missing parameters for Matrix client initialization.");
-  }
-
-  matrixClient = sdk.createClient({
+export const initMatrixClient = (baseUrl, accessToken, userId) => {
+  const client = createClient({
     baseUrl,
     accessToken,
-    userId
+    userId,
   });
 
-  matrixClient.startClient();
-};
+  client.startClient();
 
-export const getMatrixClient = () => {
-  if (!matrixClient) {
-    throw new Error("Matrix client is not initialized.");
-  }
-  return matrixClient;
+  return client;
 };
